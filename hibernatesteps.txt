@@ -1,0 +1,115 @@
+Hibernate First Application Development Steps
+=============================================
+step1:Create a maven project along with hibernate,mysql maven dependencies.
+
+<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.6.4.Final</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.22</version>
+		</dependency>
+	</dependencies>
+
+step2:Create a POJO(Plain Old Java Object)
+package com.chandra.model;
+
+public class Employee {
+
+	public int eid;
+	public String ename;
+	public double salary;
+
+	public int getEid() {
+		return eid;
+	}
+
+	public void setEid(int eid) {
+		this.eid = eid;
+	}
+
+	public String getEname() {
+		return ename;
+	}
+
+	public void setEname(String ename) {
+		this.ename = ename;
+	}
+
+	public double getSalary() {
+		return salary;
+	}
+
+	public void setSalary(double salary) {
+		this.salary = salary;
+	}
+
+}
+
+step3:Create a Hibernate mapping file(Employee.hbm.xml)
+
+<hibernate-mapping>
+  <class name="com.chandra.model.Employee" table="EMPLOYEE">
+    <id name="id" type="init">
+      <column name="ID"/>
+      <generator class="increment"/>
+    </id>
+    <property name="name" type="java.lang.String">
+      <column name="NAME"/>
+    </property>
+    <property name="name" type="java.lang.Double">
+      <column name="SALARY"/>
+    </property>
+  </class>
+</hibernate-mapping>
+
+step4:Create a hibernate configuration file(hibernate.cfg.xml)
+<session-factory>
+  <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+  <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/school</property>
+<property name="hibernate.connection.username">root</property>
+<property name="hibernate.connection.password">root</property>
+</session-factory>
+
+
+step5:Create a Hibernate Client Application(CreateEmployee.java)
+
+public class CreateEmployee{
+  public static void main(String[] args){
+        //load the mapping file and creating configuration object
+        Configuration cfg = new Configuration("Employee.hbm.xml");
+        cfg.configure();
+        //Creating connection pool
+        SessionFactory sf = cfg.buildSessionFactory();
+        //get the connection from connection pool
+        Session s = sf.openSession();
+        //create the transaction object
+        Transaction tx = s.beginTransaction();
+         //create a employee pojo class instance
+        Employee e1 = new Employee();
+        e1.setId(100);
+        e1.setName("abc");
+        e1.setSalary(5000);
+        //save the instance in to your database
+        s.save(e1);
+        //commit the data in to your database.
+        tx.commit();
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
